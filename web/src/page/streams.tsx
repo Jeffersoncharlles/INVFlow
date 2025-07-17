@@ -1,11 +1,172 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useStream } from "@/http/useStream";
+
+const createStreamsSchema = z.object({
+  sourceUrl: z.string(),
+  streamName: z.string(),
+  resolution: z.string(),
+  bitrate: z.string(),
+  codec: z.literal(z.enum(["h264", "h265"])),
+  hwAccel: z.string(),
+  logoEnabled: z.boolean(),
+});
+
+//  resolutions: ["1080p", "720p", "480p", "360p"],
+//       bitrates: ["5000k", "4000k", "2800k", "1500k", "800k"],
+//       codecs: ["h264", "h265"],
+//       hwAccels: ["cpu", "nvidia", "intel"],
+
+type CreateStreamFormData = z.infer<typeof createStreamsSchema>;
+
 const Streams = () => {
+  const { mutateAsync: createStreams } = useStream();
+
+  const createStreamForm = useForm<CreateStreamFormData>({
+    resolver: zodResolver(createStreamsSchema),
+    defaultValues: {
+      streamName: "",
+      sourceUrl: "",
+      resolution: "",
+      bitrate: "",
+      codec: "",
+      hwAccel: "",
+      logoEnabled: false,
+    },
+  });
+
+  const handleCreateStreamsSubmit = async (data: CreateStreamFormData) => {
+    await createStreams(data);
+  };
+
   return (
-    <main>
-      <div>
-        <div></div>
-        <div></div>
+    <div className="flex flex-1">
+      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="flex gap-2">
+          {[...new Array(4)].map((_i, idx) => (
+            <div
+              key={`first-array-de_io-2${
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                idx
+              }`}
+              className="h-20 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
+            ></div>
+          ))}
+        </div>
+        <div className="flex flex-1 gap-2">
+          <Card className="h-full w-full bg-neutral-900">
+            <CardHeader>
+              <CardTitle>Add Streams</CardTitle>
+              <CardDescription>your add streams here</CardDescription>
+              <CardContent>
+                <Form {...createStreamForm}>
+                  <form
+                    onSubmit={createStreamForm.handleSubmit(
+                      handleCreateStreamsSubmit
+                    )}
+                  >
+                    <FormField
+                      control={createStreamForm.control}
+                      name="sourceUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Url Stream</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createStreamForm.control}
+                      name="streamName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome do Stream</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createStreamForm.control}
+                      name="bitrate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bitrate</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={createStreamForm.control}
+                      name="codec"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Codecs</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Criar Stream</Button>
+                  </form>
+                </Form>
+                {/* <div
+                  key={`second-array-d_imo-2`}
+                  className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-700"
+                ></div> */}
+              </CardContent>
+            </CardHeader>
+          </Card>
+          <Card className="h-full w-full bg-neutral-900">
+            <CardHeader>
+              <CardTitle>Stream list</CardTitle>
+              <CardDescription>your here list streams your add</CardDescription>
+              <CardContent>
+                <div
+                  key={`second-array-d_imo-2`}
+                  className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
+                ></div>
+              </CardContent>
+            </CardHeader>
+          </Card>
+          {/* {[...new Array(2)].map((_i, idx) => (
+            <div
+              key={`second-array-d_imo-2${idx}`}
+              className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
+            ></div>
+          ))} */}
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
 export default Streams;
