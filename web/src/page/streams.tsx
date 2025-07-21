@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import StreamList from "@/components/stream-list";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +19,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useStream } from "@/http/useStream";
 
 const createStreamsSchema = z.object({
@@ -25,7 +33,7 @@ const createStreamsSchema = z.object({
   streamName: z.string(),
   resolution: z.string(),
   bitrate: z.string(),
-  codec: z.literal(z.enum(["h264", "h265"])),
+  codec: z.literal(["h264", "h265"]),
   hwAccel: z.string(),
   logoEnabled: z.boolean(),
 });
@@ -47,7 +55,7 @@ const Streams = () => {
       sourceUrl: "",
       resolution: "",
       bitrate: "",
-      codec: "",
+      codec: "h264",
       hwAccel: "",
       logoEnabled: false,
     },
@@ -130,7 +138,18 @@ const Streams = () => {
                         <FormItem>
                           <FormLabel>Codecs</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="" />
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="codec" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="h264">h264</SelectItem>
+                                <SelectItem value="h265">h265</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -151,10 +170,7 @@ const Streams = () => {
               <CardTitle>Stream list</CardTitle>
               <CardDescription>your here list streams your add</CardDescription>
               <CardContent>
-                <div
-                  key={`second-array-d_imo-2`}
-                  className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-                ></div>
+                <StreamList />
               </CardContent>
             </CardHeader>
           </Card>

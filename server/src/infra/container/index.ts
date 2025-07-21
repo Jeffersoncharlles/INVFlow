@@ -1,5 +1,6 @@
 import { GetAllStreamsUseCase } from "../../core/usecases/get-all-stream-usecase.ts";
 import { GetConfigOptionsUseCase } from "../../core/usecases/get-config-usecase.ts";
+import { RestartStreamsUseCase } from "../../core/usecases/restart-streams-usecase.ts";
 import { StartStreamUseCase } from "../../core/usecases/start-stream-usercase.ts";
 import { StopStreamUseCase } from "../../core/usecases/stop-stream-usecase.ts";
 import { ConfigController } from "../http/controllers/config-controller.ts";
@@ -19,6 +20,11 @@ const startStreamUseCase = new StartStreamUseCase(
   ffmpegProcessManager
 );
 const stopStreamUseCase = new StopStreamUseCase(
+  streamRepository,
+  ffmpegProcessManager
+);
+
+export const restartStreamsUseCase = new RestartStreamsUseCase(
   streamRepository,
   ffmpegProcessManager
 );

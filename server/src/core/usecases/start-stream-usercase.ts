@@ -5,6 +5,14 @@ import type {
 } from "../entities/active-stream-entities.ts";
 import type { IStreamRepository } from "../repositories/IStream-repository.ts";
 
+type ProgressData = {
+  frame: number;
+  fps: number;
+  bitrate: string;
+  time: string;
+  speed: string;
+};
+
 export class StartStreamUseCase {
   constructor(
     private streamRepo: IStreamRepository,
@@ -21,15 +29,28 @@ export class StartStreamUseCase {
       );
     }
 
-    const process = this.processManager.spawn(streamConfig, (code) => {
-      console.log(
-        `Processo para '${streamConfig.streamName}' finalizado com código ${code}. Limpando do DB.`
-      );
-      this.streamRepo.deleteByName(streamConfig.streamName);
-    });
+    const process = this.processManager.spawn(
+      streamConfig,
+      (code) => {
+        console.log(
+          `Processo para '${streamConfig.streamName}' finalizado com código ${code}. Limpando do DB.`
+        );
+        this.streamRepo.deleteByName(streamConfig.streamName);
+      },
+      (progress) => {
+        console.log("Progresso:", progress);
+        // Enviar via WebSocket? Registrar no Redis? Emitir evento para dashboard?
+      }
+    );
 
-    const newStream: ActiveStream = { ...streamConfig, pid: process.pid! };
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const newStream: ActiveStream = {
+      ...streamConfig,
+      pid: process.process.pid!,
+    };
     await this.streamRepo.save(newStream);
-    return newStream;
+    return {
+      ...newStream,
+    };
   }
 }

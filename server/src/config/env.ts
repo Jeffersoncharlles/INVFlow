@@ -23,6 +23,10 @@ const envSchema = z.object({
   FFMPEG_PATH: z.string().default(path.join(ROOT_DIR, "bin", "ffmpeg")),
   LOGO_PATH: z.string().default(path.join(ROOT_DIR, "public", "logo.png")),
   DB_PATH: z.string().default(path.join(ROOT_DIR, "streams.json")),
+  FRONTEND_DIST_DIR: z.string().default(path.join(ROOT_DIR, "web", "dist")),
+  FRONTEND_DIST_DIR_ASSETS: z
+    .string()
+    .default(path.join(ROOT_DIR, "web", "dist", "assets")),
 });
 
 export const env = envSchema.parse(process.env);

@@ -1,17 +1,25 @@
 import { type ChildProcess, spawn } from "node:child_process";
-
 import fs from "node:fs";
 import path from "node:path";
 import { env } from "../../../config/env.ts";
 import type { StreamConfig } from "../../../core/entities/active-stream-entities.ts";
+
+type ProgressData = {
+  frame: number;
+  fps: number;
+  bitrate: string;
+  time: string;
+  speed: string;
+};
 
 export class FfmpegProcessManager {
   public activeProcesses = new Map<string, ChildProcess>();
 
   spawn(
     streamConfig: StreamConfig,
-    onClose: (code: number | null) => void
-  ): ChildProcess {
+    onClose: (code: number | null) => void,
+    onProgress?: (progress: ProgressData) => void
+  ): { process: ChildProcess } {
     const { streamName } = streamConfig;
     const args = this.buildFfmpegArgs(streamConfig);
 
@@ -21,24 +29,57 @@ export class FfmpegProcessManager {
       )}`
     );
 
-    const ffmpegProcess = spawn(env.FFMPEG_PATH, args);
+    const ffmpegProcess = spawn(env.FFMPEG_PATH, args, {
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
     this.activeProcesses.set(streamName, ffmpegProcess);
 
-    ffmpegProcess.stderr.on("data", (data) =>
-      console.log(`[FFMPEG - ${streamName}]: ${data.toString()}`)
-    );
+    ffmpegProcess.stderr.setEncoding("utf8");
+    ffmpegProcess.stderr.on("data", (chunk) => {
+      const lines = chunk.toString().split("\n");
+
+      for (const line of lines) {
+        const clean = line.trim();
+        if (!clean) continue;
+
+        console.log(`[FFMPEG STDERR - ${streamName}]: ${clean}`);
+
+        // 🔍 Detectar linha de progresso (ex: "frame= 236 ...")
+        if (clean.startsWith("frame=") && onProgress) {
+          const match = clean.match(
+            /frame=\s*(\d+)\s+fps=\s*([\d.]+)\s+.*?bitrate=\s*([\d.kbits/s]+)\s+.*?time=([\d:.]+)\s+.*?speed=\s*([\d.]+)x/
+          );
+
+          if (match) {
+            const [, frame, fps, bitrate, time, speed] = match;
+            onProgress({
+              frame: parseInt(frame, 10),
+              fps: parseFloat(fps),
+              bitrate,
+              time,
+              speed,
+            });
+          }
+        }
+      }
+    });
 
     ffmpegProcess.on("close", (code) => {
       this.activeProcesses.delete(streamName);
+      console.log(`[FFMPEG CLOSED - ${streamName}] Código de saída: ${code}`);
       onClose(code);
     });
 
-    return ffmpegProcess;
+    ffmpegProcess.on("error", (err) => {
+      console.error(`[FFMPEG ERRO - ${streamName}]:`, err);
+    });
+
+    return { process: ffmpegProcess };
   }
 
   kill(pid: number, streamName: string): boolean {
     try {
-      // Tenta matar o processo pelo PID
       process.kill(pid, "SIGTERM");
       console.log(
         `Sinal de parada enviado para o processo PID ${pid} do stream '${streamName}'.`
@@ -52,8 +93,19 @@ export class FfmpegProcessManager {
     }
   }
 
+  isProcessRunning(pid: number): boolean {
+    try {
+      // O sinal 0 não faz nada, mas lança um erro se o processo não existir.
+      // É uma forma padrão no Node.js de checar a existência de um processo.
+      process.kill(pid, 0);
+      return true;
+    } catch (_e) {
+      // O erro (geralmente 'ESRCH') indica que o processo não foi encontrado.
+      return false;
+    }
+  }
+
   private buildFfmpegArgs(streamConfig: StreamConfig): string[] {
-    // ... Lógica do buildFfmpegArgs exatamente como na versão anterior
     const {
       sourceUrl,
       streamName,

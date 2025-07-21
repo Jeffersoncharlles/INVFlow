@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { env } from "@/env";
 
 type StreamAPIResponse = {
   message: string;
@@ -19,7 +20,7 @@ const useStream = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: StreamAPIRequest) => {
-      const response = await fetch("http://localhost:3333/api/streams/start", {
+      const response = await fetch(`${env.BASE_URL_API}/api/streams/start`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

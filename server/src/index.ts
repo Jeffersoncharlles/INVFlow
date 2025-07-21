@@ -1,11 +1,18 @@
 import { env } from "./config/env.ts";
+import { restartStreamsUseCase } from "./infra/container/index.ts";
 import { createServer } from "./infra/http/server.ts";
 
 // 1. Cria a instância do servidor com todas as rotas e configurações
 const server = createServer();
 
 // 2. Define a função assíncrona para iniciar o servidor
+
+const restartExistingStreams = async () => {
+  await restartStreamsUseCase.execute();
+};
+
 const start = async () => {
+  await restartExistingStreams();
   try {
     // 3. Inicia o servidor na porta e host definidos
     await server.listen({ port: env.PORT, host: "0.0.0.0" });

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { env } from "@/env";
 
 type StreamsAPIResponse = {
   sourceUrl: string;
@@ -16,7 +17,7 @@ export const useStreams = () => {
   return useQuery({
     queryKey: ["streams"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:3333/api/streams");
+      const response = await fetch(`${env.VITE_BASE_URL_API}/api/streams`);
       const result: StreamsAPIResponse = await response.json();
       return result;
     },
