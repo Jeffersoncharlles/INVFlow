@@ -31,16 +31,14 @@ import { useStream } from "@/http/useStream";
 const createStreamsSchema = z.object({
   sourceUrl: z.string(),
   streamName: z.string(),
-  resolution: z.string(),
+  resolution: z.literal(["1080p", "720p", "480p", "360p"]),
   bitrate: z.string(),
   codec: z.literal(["h264", "h265"]),
   hwAccel: z.string(),
   logoEnabled: z.boolean(),
 });
 
-//  resolutions: ["1080p", "720p", "480p", "360p"],
 //       bitrates: ["5000k", "4000k", "2800k", "1500k", "800k"],
-//       codecs: ["h264", "h265"],
 //       hwAccels: ["cpu", "nvidia", "intel"],
 
 type CreateStreamFormData = z.infer<typeof createStreamsSchema>;
@@ -53,7 +51,7 @@ const Streams = () => {
     defaultValues: {
       streamName: "",
       sourceUrl: "",
-      resolution: "",
+      resolution: "720p",
       bitrate: "",
       codec: "h264",
       hwAccel: "",
@@ -131,30 +129,58 @@ const Streams = () => {
                       )}
                     />
 
-                    <FormField
-                      control={createStreamForm.control}
-                      name="codec"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Codecs</FormLabel>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="codec" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="h264">h264</SelectItem>
-                                <SelectItem value="h265">h265</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex gap-2 mt-2 mb-2">
+                      <FormField
+                        control={createStreamForm.control}
+                        name="codec"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Codecs</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="codec" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="h264">h264</SelectItem>
+                                  <SelectItem value="h265">h265</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={createStreamForm.control}
+                        name="resolution"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Codecs</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Resolution" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="1080p">1080p</SelectItem>
+                                  <SelectItem value="720p">720p</SelectItem>
+                                  <SelectItem value="480p">480p</SelectItem>
+                                  <SelectItem value="360p">360p</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                     <Button type="submit">Criar Stream</Button>
                   </form>
                 </Form>
