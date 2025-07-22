@@ -63,11 +63,11 @@ const LayoutRoot = () => {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: "Jefferson charlles",
                 href: "#",
                 icon: (
                   <img
-                    src="https://assets.aceternity.com/manu.png"
+                    src="https://github.com/jeffersoncharlles.png"
                     className="h-7 w-7 shrink-0 rounded-full"
                     width={50}
                     height={50}
