@@ -26,22 +26,24 @@ O INVFlow oferece um conjunto robusto de funcionalidades para o gerenciamento de
 
 ## 🛠️ Tecnologias Utilizadas
 
-O projeto é dividido em duas partes principais, cada uma com seu próprio conjunto de tecnologias de ponta.
+O INVFlow foi construído com uma stack de tecnologias modernas e performáticas, tanto no back-end quanto no front-end.
 
-### Back-end
+### Servidor (Back-end)
 
-- **[Node.js](https://nodejs.org/)**: Ambiente de execução JavaScript para o servidor.
-- **[fastify](https://fastify.dev/)** (ou similar como Fastify): Framework para a construção da API.
-- **[FFmpeg](https://ffmpeg.org/)**: Solução completa para gravar, converter e transmitir áudio e vídeo. Compilado por **jeffersonc.dev** para otimizações específicas.
-- **[fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)** (sugestão): Biblioteca para facilitar a manipulação do FFmpeg em Node.js.
+- **[Node.js](https://nodejs.org/)**: Ambiente de execução JavaScript assíncrono, ideal para operações de I/O intensas como o streaming.
+- **[Fastify](https://www.fastify.io/)**: Framework web de alta performance e baixo overhead, focado em velocidade e eficiência.
+- **[FFmpeg](https://ffmpeg.org/)**: A principal ferramenta para transcodificação de vídeo, utilizada em uma versão customizada para otimizações.
+- **[zod](https://zod.dev/)**: validador de tipos dados em input ou output.
+- **[TypeScript](https://www.typescriptlang.org/)**: Superset do JavaScript que adiciona tipagem estática, aumentando a robustez e a manutenibilidade do código da API.
 
-### Front-end
+### Web (Front-end)
 
-- **[Vite.js](https://vitejs.dev/)**: Ferramenta de build extremamente rápida para o desenvolvimento front-end moderno.
-- **[React](https://reactjs.org/)**: Biblioteca para a construção de interfaces de usuário.
-- **[React Router DOM](https://reactrouter.com/)**: Para o gerenciamento de rotas na aplicação.
-- **[Tailwind CSS](https://tailwindcss.com/)**: Framework CSS utility-first para a criação de designs customizados rapidamente.
-- **[Axios](https://axios-http.com/)** (ou `fetch` API): Para realizar as requisições HTTP para o back-end.
+- **Vite**: Ferramenta de build de última geração que oferece um desenvolvimento extremamente rápido com Hot Module Replacement (HMR).
+- **React**: Biblioteca para a construção de interfaces de usuário dinâmicas e reativas.
+- **React Router DOM**: Para o gerenciamento de rotas do lado do cliente em uma Single Page Application (SPA).
+- **Tailwind CSS**: Framework CSS utility-first que permite a criação de designs customizados de forma rápida e eficiente.
+- **React Query**: Cliente HTTP baseado em Promises para realizar requisições à API do back-end.
+- **TypeScript**: Garante um código mais seguro e previsível no front-end, facilitando a integração com a API.
 
 ## 📦 Instalação e Configuração
 
@@ -68,10 +70,14 @@ Siga os passos abaixo para configurar e executar o ambiente de desenvolvimento d
     npm install
     ```
 4.  Configure as variáveis de ambiente. Crie um arquivo `.env` a partir do `.env.example` e adicione as configurações necessárias, como a porta da API e o caminho para o executável do FFmpeg.
+
     ```env
     PORT=3333
     FFMPEG_PATH=/caminho/para/seu/ffmpeg
     ```
+
+    4.1 o server tem uma pasta bin se vc compilar sua versão e colocar nela o sistema automaticamente vai pegar de la o ffmpeg
+
 5.  Inicie o servidor de desenvolvimento:
     ```bash
     npm run dev

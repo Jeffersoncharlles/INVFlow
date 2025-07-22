@@ -96,7 +96,6 @@ export class FfmpegProcessManager {
   isProcessRunning(pid: number): boolean {
     try {
       // O sinal 0 não faz nada, mas lança um erro se o processo não existir.
-      // É uma forma padrão no Node.js de checar a existência de um processo.
       process.kill(pid, 0);
       return true;
     } catch (_e) {
