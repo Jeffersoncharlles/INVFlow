@@ -4,7 +4,13 @@
 
 O projeto foi desenvolvido com foco em performance e escalabilidade, utilizando uma API em Node.js que se comunica diretamente com uma versão customizada e compilada do FFmpeg pelo desenvolvedor [jeffersonc.dev](https://github.com/jeffersoncdev). O front-end é uma Single Page Application (SPA) moderna e reativa, construída com Vite.js, React e Tailwind CSS.
 
-## 🚀 Funcionalidades Principais
+## � Interface do Projeto
+
+Veja como é o dashboard do INVFlow em execução:
+
+![Dashboard INVFlow](screen/dashboard.png)
+
+## �🚀 Funcionalidades Principais
 
 O INVFlow oferece um conjunto robusto de funcionalidades para o gerenciamento de transcodificação de vídeo:
 
