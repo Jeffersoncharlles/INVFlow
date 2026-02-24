@@ -115,7 +115,7 @@ Após seguir esses passos, a aplicação estará acessível em `http://localhost
 
 ## 👨‍💻 Desenvolvedor
 
-Este projeto foi idealizado e desenvolvido por **Jefferson Campos**.
+Este projeto foi idealizado e desenvolvido por **Jefferson Charlles**.
 
 - **GitHub:** [@jeffersoncharlles](https://github.com/jeffersoncharlles)
 - **Website:** [jeffersonc.dev](https://jefferdeveloper.com)
